@@ -1,3 +1,6 @@
+// practicing implementing snakemake pipeline for chip sequencing for the code I used in my own project
+
+
 rule bowtie2_map :
 	input:
 		"/Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/ChIPSeq_data/samples/{sample}_500_reads.fastq"
