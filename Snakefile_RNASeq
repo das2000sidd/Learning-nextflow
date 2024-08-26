@@ -1,3 +1,6 @@
+// practicing implementing snakemake pipeline for RNA sequencing for the code I used in my own project
+
+
 rule hisat2_map :
 	input:
 		"/Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/samples/{sample}_500_reads.fq"
