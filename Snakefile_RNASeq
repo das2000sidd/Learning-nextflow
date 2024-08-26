@@ -1,0 +1,44 @@
+rule hisat2_map :
+	input:
+		"/Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/samples/{sample}_500_reads.fq"
+	output:
+		"/Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/mapped_reads/{sample}.bam"
+	shell:
+		"/Users/siddhaduio.no/Desktop/ALL_DESKTOP_ITEMS_IN_HERE/All_omics_tools/hisat2-2.2.1/hisat2 -p 8 --dta -x /Users/siddhaduio.no/Desktop/ALL_DESKTOP_ITEMS_IN_HERE/All_omics_tools/hisat2_indexes/grch38_tran/genome_tran -U {input} -S /Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/mapped_reads/{wildcards.sample}.sam | /Users/siddhaduio.no/Desktop/ALL_DESKTOP_ITEMS_IN_HERE/All_omics_tools/samtools-1.14/samtools view -Sb /Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/mapped_reads/{wildcards.sample}.sam > {output}"
+		
+		
+		
+rule samtools_sort:
+	input:
+		"/Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/mapped_reads/{sample}.bam"
+	output:
+		"/Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/sorted_bam/{sample}.sorted.bam"
+		
+	shell:
+		"/Users/siddhaduio.no/Desktop/ALL_DESKTOP_ITEMS_IN_HERE/All_omics_tools/samtools-1.14/samtools sort -o {output} {input}"
+		
+
+
+
+rule samtools_index:
+	input:
+		"/Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/sorted_bam/{sample}.sorted.bam"
+	
+	output:
+		"/Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/sorted_bam/{sample}.sorted.bam.bai"
+	
+	shell:
+		"/Users/siddhaduio.no/Desktop/ALL_DESKTOP_ITEMS_IN_HERE/All_omics_tools/samtools-1.14/samtools index {input}"
+		
+		
+	
+
+rule htseq_count:
+	input:
+		"/Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/sorted_bam/{sample}.sorted.bam"
+	output:
+		"/Users/siddhaduio.no/Desktop/PhD_Project_related/Learning_SnakeMake/RNA_Seq_data/counts/{sample}.htseq.counts"
+	conda:
+		"htseq_count.yaml"
+	shell:
+		"htseq-count -f bam -q -m union -s reverse -t exon -i gene_id {input} /Users/siddhaduio.no/Desktop/ALL_DESKTOP_ITEMS_IN_HERE/All_omics_tools/Homo_sapiens.GRCh38.104.with.chr.word.gtf > {output}"
